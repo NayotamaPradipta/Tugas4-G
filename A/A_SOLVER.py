@@ -17,10 +17,7 @@ def case_A(n, e, c):
     d = mod_inverse(e, totient_n)
     # Decrypt
     m_int = pow(c, d, n)
-    m_bytes = m_int.to_bytes((m_int.bit_length() + 7) // 8, byteorder='big')
-
-    m_str = m_bytes.decode()
-    return m_str
+    return m_int
 
 def case_B(n, e, c):
     p = isqrt(n)
@@ -29,10 +26,7 @@ def case_B(n, e, c):
     d = mod_inverse(e, totient_n)
     # Decrypt
     m_int = pow(c, d, n)
-    m_bytes = m_int.to_bytes((m_int.bit_length() + 7) // 8, byteorder='big')
-
-    m_str = m_bytes.decode()
-    return m_str
+    return m_int
 
 def case_C(n, e, c):
     return 
@@ -45,8 +39,10 @@ def case_E(n, e, c):
     d = mod_inverse(e, totient_n)
     # Decrypt
     m_int = pow(c, d, n)
-    m_bytes = m_int.to_bytes((m_int.bit_length() + 7) // 8, byteorder='big')
+    return m_int
 
+def decode_m(m_int):
+    m_bytes = m_int.to_bytes((m_int.bit_length() + 7) // 8, byteorder='big')
     m_str = m_bytes.decode()
     return m_str
 
@@ -91,6 +87,7 @@ def auto_solve(main_program):
                     decrypted_message = case_D(n, e, c)
                 elif paket == 'E':
                     decrypted_message = case_E(n, e, c)
+                decrypted_message = decode_m(decrypted_message)
                 print(decrypted_message)
                 process.stdin.write(decrypted_message + '\n')
                 process.stdin.flush()
