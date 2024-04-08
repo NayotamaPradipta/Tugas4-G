@@ -1,5 +1,6 @@
 from math import isqrt
 from sympy import mod_inverse
+import gmpy2
 import re 
 import subprocess 
 def case_A(n, e, c):
@@ -32,7 +33,8 @@ def case_C(n, e, c):
     return 
 
 def case_D(n, e, c):
-    return 
+    m_int = cube_root(c, e)
+    return m_int
 
 def case_E(n, e, c):
     totient_n = n - 1
@@ -46,6 +48,9 @@ def decode_m(m_int):
     m_str = m_bytes.decode()
     return m_str
 
+def cube_root(c, e):
+    message_int = gmpy2.iroot(c, e)[0]
+    return int(message_int)
 
 def auto_solve(main_program):
     n_pattern = re.compile(r'n = (\d+)')
