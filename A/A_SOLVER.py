@@ -23,7 +23,16 @@ def case_A(n, e, c):
     return m_str
 
 def case_B(n, e, c):
-    return 
+    p = isqrt(n)
+    print(f"p: {p}")
+    totient_n = p * (p-1)
+    d = mod_inverse(e, totient_n)
+    # Decrypt
+    m_int = pow(c, d, n)
+    m_bytes = m_int.to_bytes((m_int.bit_length() + 7) // 8, byteorder='big')
+
+    m_str = m_bytes.decode()
+    return m_str
 
 def case_C(n, e, c):
     return 
