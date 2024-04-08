@@ -41,7 +41,14 @@ def case_D(n, e, c):
     return 
 
 def case_E(n, e, c):
-    return 
+    totient_n = n - 1
+    d = mod_inverse(e, totient_n)
+    # Decrypt
+    m_int = pow(c, d, n)
+    m_bytes = m_int.to_bytes((m_int.bit_length() + 7) // 8, byteorder='big')
+
+    m_str = m_bytes.decode()
+    return m_str
 
 
 def auto_solve(main_program):
