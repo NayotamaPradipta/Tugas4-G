@@ -3,6 +3,7 @@ from sympy import mod_inverse
 import gmpy2
 import re 
 import subprocess 
+import contfrac
 def case_A(n, e, c):
     a = isqrt(n) +  1
     b2 = a*a - n
@@ -30,7 +31,24 @@ def case_B(n, e, c):
     return m_int
 
 def case_C(n, e, c):
-    return 
+    # # Low Private Exponent - Wiener's Attack
+    value = e / n
+    cf = list(contfrac.continued_fraction(value))
+    for k, dg in convergent(cf):
+        # k = num, dg = denum (possible private key)
+        edg = e * dg 
+        # ed = 1 (mod totient(n)) --> ed = k*(totient(n)) + 1
+        totient_n = (edg-1) // k
+        # totient_n = (p-1)(q-1) --> totient_n = pq - (p+q) + 1 = n - (p+q) + 1
+        p_plus_q = n - totient_n + 1
+        # p,q -> prime, so p+q must be even, and check if ((p-q)**2)/2 is perfect square --> (p-q)/2 is integer
+        if p_plus_q % 2 == 0 and gmpy2.is_square((p_plus_q // 2) ** 2 - n):
+            g = edg - totient_n * k
+            # Make sure that e * d = 1 (mod totient(n)) if g != 1
+            d =  dg // g
+            m_int = pow(c, d, n)
+            return m_int
+    return None
 
 def case_D(n, e, c):
     m_int = cube_root(c, e)
@@ -51,6 +69,27 @@ def decode_m(m_int):
 def cube_root(c, e):
     message_int = gmpy2.iroot(c, e)[0]
     return int(message_int)
+
+def brute_force_c(n, e, c):
+    for d in range(2**15, 2**16):
+        try: 
+            m_int = pow(c,d,n)
+            m_decode = decode_m(m_int)
+            return m_int
+        except Exception as ex: 
+            continue 
+    return None 
+
+def convergent(contfrac):
+    h1, h2 = 0, 1 
+    k1, k2 = 1, 0
+    for a in contfrac:
+        if a != 0:
+            h = a * h1 + h2
+            k = a * k1 + k2
+            yield (h, k)
+            h2, h1 = h1, h
+            k2, k1 = k1, k
 
 def auto_solve(main_program):
     n_pattern = re.compile(r'n = (\d+)')
