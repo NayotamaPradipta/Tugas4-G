@@ -5,6 +5,7 @@ import re
 import subprocess 
 import contfrac
 def case_A(n, e, c):
+    # Fermat Factorization
     a = isqrt(n) +  1
     b2 = a*a - n
     b = isqrt(b2)
@@ -23,7 +24,7 @@ def case_A(n, e, c):
 
 def case_B(n, e, c):
     p = isqrt(n)
-    print(f"p: {p}")
+    # P = Q --> totient(n) != (p-1)(q-1)
     totient_n = p * (p-1)
     d = mod_inverse(e, totient_n)
     # Decrypt
@@ -31,7 +32,7 @@ def case_B(n, e, c):
     return m_int
 
 def case_C(n, e, c):
-    # # Low Private Exponent - Wiener's Attack
+    # # Low Private Exponent - Wiener's Attack or Brute Force is possible
     value = e / n
     cf = list(contfrac.continued_fraction(value))
     for k, dg in convergent(cf):
@@ -51,10 +52,12 @@ def case_C(n, e, c):
     return None
 
 def case_D(n, e, c):
+    # Hastad's Broadcast Attack
     m_int = cube_root(c, e)
     return m_int
 
 def case_E(n, e, c):
+    # Prime N
     totient_n = n - 1
     d = mod_inverse(e, totient_n)
     # Decrypt
