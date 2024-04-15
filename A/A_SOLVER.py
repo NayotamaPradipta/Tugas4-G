@@ -52,7 +52,7 @@ def case_C(n, e, c):
     return None
 
 def case_D(n, e, c):
-    # Hastad's Broadcast Attack
+    # Cube Root Attack
     m_int = cube_root(c, e)
     return m_int
 
